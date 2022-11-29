@@ -1,9 +1,11 @@
-
-    using UnityEngine;
-
-   public enum GameStates 
+namespace Enums
+{
+    public enum GameStates
     {
         Idle,
         Moving,
         Final
+
+
     }
+}

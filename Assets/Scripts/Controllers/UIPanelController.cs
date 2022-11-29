@@ -1,8 +1,9 @@
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Signals;
-using Sirenix.OdinInspector;
 using UnityEngine;
+using Sirenix.OdinInspector;
+using Enums;
+
 
 public class UIPanelController : MonoBehaviour
 {
@@ -10,55 +11,62 @@ public class UIPanelController : MonoBehaviour
 
     #region Serialized Variables
 
-    [SerializeField] private List<Transform> layers = new List<Transform>();
-    
+    [SerializeField] private List<Transform> layers=new List<Transform> ();
+
     #endregion
     
     #endregion
+
+
 
     private void OnEnable()
     {
         SubscribeEvents();
+
     }
 
     private void SubscribeEvents()
     {
-        CoreUISignals.Instance.onOpenPanel += OnOpenPanel;
-        CoreUISignals.Instance.onClosePanel += OnClosePanel;
-        CoreUISignals.Instance.onCloseAllPanels += OnCloseAllPanels;
+
     }
 
-    private void UnSubscribeEvents()
+    private void UnsubscribeEvents()
     {
-        CoreUISignals.Instance.onOpenPanel -= OnOpenPanel;
-        CoreUISignals.Instance.onClosePanel -= OnClosePanel;
-        CoreUISignals.Instance.onCloseAllPanels -= OnCloseAllPanels;
+
     }
 
     private void OnDisable()
     {
-        UnSubscribeEvents();
+        UnsubscribeEvents();
     }
-    [Button("OnOpenPanel")]
-    private void OnOpenPanel(UIPanelTypes type, int layerValue)
+
+    [Button("OpenPanel")]
+    private void OnOpenPanel(UIPanelTypes type, int layerPos)
     {
-        OnClosePanel(layerValue);
-        Instantiate(Resources.Load<GameObject>($"Screens/{type}Panel"), layers[layerValue]);
+        Instantiate(Resources.Load<GameObject>($"Screens/{type}Panel"), layers[layerPos]);
     }
-    [Button("OnClosePanel")]
-    private void OnClosePanel(int layerValue)
+
+    [Button("ClosePanel")]
+    private void OnClosePanel(int layerPos)
     {
-        if (layers[layerValue].childCount > 0)
+        if (layers[layerPos].transform.childCount > 0)
         {
-            Destroy(layers[layerValue].GetChild(0).gameObject);
+            Destroy(layers[layerPos].GetChild(0).gameObject);
         }
+        
+        
+
+
+
     }
-    [Button("OnCloseAllPanel")]
+
+    //[Button ("OnCloseAllPanels")]
     private void OnCloseAllPanels()
     {
-        foreach (var t in layers.Where(t => t.childCount > 0))
+        for(int i=0; i<layers.Count; i++)
         {
-            Destroy(t.GetChild(0).gameObject);
+            if (layers[i].transform.childCount > 0)
+            Destroy (layers[i].GetChild(0).gameObject);
         }
     }
 }
